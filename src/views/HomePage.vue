@@ -1,51 +1,57 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Blank</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-    
       <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+        <div v-if="!idUser">
+          <all-albums-component />
+        </div>
+        <div v-else>
+         <my-artists-component />
+        </div>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+<script>
+import { IonContent, IonPage } from '@ionic/vue';
 import { defineComponent } from 'vue';
+import AllAlbumsComponent from "@/components/AllAlbumsComponent";
+import MyArtistsComponent from "@/components/MyArtistsComponent";
 
 export default defineComponent({
   name: 'HomePage',
+
   components: {
+    MyArtistsComponent,
+    AllAlbumsComponent,
     IonContent,
-    IonHeader,
     IonPage,
-    IonTitle,
-    IonToolbar
+  },
+
+  mounted() {
+    if (this.idUser){
+      this.loadAllMySong();
+    }
+  },
+
+  methods:{
+    loadAllMySong(){
+      this.$store.dispatch('fetchAllMySongs', this.idUser)
+    }
+  },
+
+  computed:{
+    idUser() {
+      return this.$store.getters.getIdUser
+    },
   }
 });
 </script>
 
 <style scoped>
 #container {
-  text-align: center;
-  
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+
 }
 
 #container strong {
